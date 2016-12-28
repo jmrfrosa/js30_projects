@@ -52,6 +52,10 @@
       background: black;
       position: absolute;
       top: 50%; /* in order for top to work position must be absolute */
+      transform-origin: 100%; /* moves origin to the tip of the X axis so we can rotate from center of clock */
+      transform: rotate(90deg); /* starts hands from 12'o'clock */
+      transition: all 0.1s;
+      transition-timing-function: cubic-bezier(0, 2.21, 0.53, 1.09); /* ticking animation */
     }
   </style>
 
