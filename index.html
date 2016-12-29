@@ -65,18 +65,16 @@
     minuteHand = document.querySelector('.minute-hand');
     hourHand = document.querySelector('.hour-hand');
     var totalSeconds = 0;
+    var totalMinutes = 0;
+    var totalHours = 0;
     
     function setDate() {
       const now = new Date();
-      const minutes = now.getMinutes();
-      const hours = now.getHours();
 
-      const minutesToDegrees = (minutes / 60) * 360;
-      const hoursToDegrees = (hours / 12) * 360;
       /* rotation needs to be offset by 90deg due to previous transformation */
       secondHand.style.transform = `rotate(${setSeconds(now)+90}deg)`;
-      minuteHand.style.transform = `rotate(${minutesToDegrees+90}deg)`;
-      hourHand.style.transform = `rotate(${hoursToDegrees+90}deg)`;
+      minuteHand.style.transform = `rotate(${setMinutes(now)+90}deg)`;
+      hourHand.style.transform = `rotate(${setHours(now)+90}deg)`;
     }
 
     function setSeconds(date){
@@ -85,8 +83,28 @@
       if(totalSeconds == 0)
       { totalSeconds = secondsToDegrees; }
       else
-      { totalSeconds += (1/60)*360 }
+      { totalSeconds += (1/60)*360; }
       return totalSeconds
+    }
+
+    function setMinutes(date){
+      const minutes = date.getMinutes();
+      const minutesToDegrees = (minutes / 60) * 360;
+      if(totalMinutes == 0)
+      { totalMinutes = minutesToDegrees; }
+      else if(minutesToDegrees != totalMinutes)
+      { totalMinutes += (1/60)*360; }
+      return totalMinutes
+    }
+
+    function setHours(date){
+      const hours = date.getHours();
+      const hoursToDegrees = (hours / 12) * 360;
+      if(totalHours == 0)
+      { totalHours = hoursToDegrees; }
+      else if(hoursToDegrees != totalHours)
+      { totalHours += (1/12)*360; }
+      return totalHours
     }
 
     setInterval(setDate, 1000);
