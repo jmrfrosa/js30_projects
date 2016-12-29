@@ -64,27 +64,31 @@
     secondHand = document.querySelector('.second-hand');
     minuteHand = document.querySelector('.minute-hand');
     hourHand = document.querySelector('.hour-hand');
-    var totalSeconds = undefined;
+    var totalSeconds = 0;
     
     function setDate() {
       const now = new Date();
-      const seconds = now.getSeconds();
       const minutes = now.getMinutes();
       const hours = now.getHours();
 
-      const secondsToDegrees = (seconds / 60) * 360;
-      if(typeof totalSeconds == "undefined"){
-        console.log('total is undefined, setting to degrees')
-        totalSeconds = secondsToDegrees;
-      }
-      totalSeconds += (1/60)*360;
       const minutesToDegrees = (minutes / 60) * 360;
       const hoursToDegrees = (hours / 12) * 360;
       /* rotation needs to be offset by 90deg due to previous transformation */
-      secondHand.style.transform = `rotate(${totalSeconds+90}deg)`;
+      secondHand.style.transform = `rotate(${setSeconds(now)+90}deg)`;
       minuteHand.style.transform = `rotate(${minutesToDegrees+90}deg)`;
       hourHand.style.transform = `rotate(${hoursToDegrees+90}deg)`;
     }
+
+    function setSeconds(date){
+      const seconds = date.getSeconds();
+      const secondsToDegrees = (seconds / 60) * 360;
+      if(totalSeconds == 0)
+      { totalSeconds = secondsToDegrees; }
+      else
+      { totalSeconds += (1/60)*360 }
+      return totalSeconds
+    }
+
     setInterval(setDate, 1000);
   </script>
 
