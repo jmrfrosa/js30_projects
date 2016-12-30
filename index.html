@@ -31,6 +31,7 @@
     }
 
     .clock {
+      background: #DDD;
       width: 30rem;
       height: 30rem;
       margin: 50px auto;
@@ -38,6 +39,20 @@
       border-radius: 50%;
       position: relative;
       padding: 2rem;
+      box-shadow: .5em .5em 1px #222;
+    }
+
+    .clock::after {
+      background: #222;
+      border-radius: 50%;
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: 52%;
+      transform: translate(-50%, -50%);
+      width: 5%;
+      height: 5%;
+      z-index: 2;
     }
 
     .clock-face {
@@ -57,6 +72,7 @@
       transition: all 0.1s;
       transition-timing-function: cubic-bezier(0, 2.21, 0.53, 1.09); /* ticking animation */
     }
+
   </style>
 
   <script>
@@ -64,6 +80,13 @@
     secondHand = document.querySelector('.second-hand');
     minuteHand = document.querySelector('.minute-hand');
     hourHand = document.querySelector('.hour-hand');
+    
+    /* This can be done in a much shorter way without using these counters,
+       however, doing so will cause the CSS ticking animation to jump
+       around when the angle calculation jumps from 360 to 0. So, we tally
+       up all the seconds, minutes and hours passed since the clock was
+       activated to prevent this behaviour. */
+
     var totalSeconds = 0;
     var totalMinutes = 0;
     var totalHours = 0;
@@ -87,12 +110,22 @@
       return totalSeconds
     }
 
+    /* In order for the tally to work correctly in this way
+       I had to use some validations: so if totalMinutes/Hours
+       is still not set, we attribute the current time to it
+       (starting condition). If the clock is already running,
+       we check if the time has changed (since, due to setInterval
+       it's ticking every second). Lastly, since the tally
+       constantly adds the angle up to infinity, we check both
+       angles after a modulus operation (since they should be
+       the same). */
+
     function setMinutes(date){
       const minutes = date.getMinutes();
       const minutesToDegrees = (minutes / 60) * 360;
       if(totalMinutes == 0)
       { totalMinutes = minutesToDegrees; }
-      else if(minutesToDegrees != totalMinutes)
+      else if((minutesToDegrees % 360) != (totalMinutes % 360))
       { totalMinutes += (1/60)*360; }
       return totalMinutes
     }
@@ -102,11 +135,12 @@
       const hoursToDegrees = (hours / 12) * 360;
       if(totalHours == 0)
       { totalHours = hoursToDegrees; }
-      else if(hoursToDegrees != totalHours)
+      else if((hoursToDegrees % 360) != (totalHours % 360))
       { totalHours += (1/12)*360; }
       return totalHours
     }
 
+    /* Makes the clock tick every 1000ms */
     setInterval(setDate, 1000);
   </script>
 
